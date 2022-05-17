@@ -1,4 +1,4 @@
-package andotp
+package internal
 
 import (
 	"crypto/aes"
@@ -6,6 +6,7 @@ import (
 	"crypto/rand"
 	"crypto/sha1"
 	"encoding/binary"
+	"encoding/json"
 	"fmt"
 	"math/big"
 
@@ -97,4 +98,32 @@ func Decrypt(password, text []byte) ([]byte, error) {
 	}
 
 	return plaintext, nil
+}
+
+type Entry struct {
+	Algorithm     string   `json:"algorithm"`
+	Digits        uint     `json:"digits"`
+	Issuer        string   `json:"issuer"`
+	Label         string   `json:"label"`
+	LastUsed      uint     `json:"last_used"`
+	Period        uint     `json:"period"`
+	Secret        string   `json:"secret"`
+	Tags          []string `json:"tags"`
+	Thumbnail     string   `json:"thumbnail"`
+	Type          string   `json:"type"`
+	UsedFrequency uint     `json:"usedFrequency"`
+}
+
+func DecryptAsEntries(password, text []byte) ([]Entry, error) {
+	result, err := Decrypt(password, text)
+	if err != nil {
+		return nil, fmt.Errorf("decrypt: %w", err)
+	}
+
+	var entries []Entry
+	if err := json.Unmarshal(result, &entries); err != nil {
+		return nil, fmt.Errorf("json.Unmarshal: %w", err)
+	}
+
+	return entries, nil
 }
