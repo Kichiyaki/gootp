@@ -26,22 +26,19 @@ func Encrypt(password, plaintext []byte) ([]byte, error) {
 	iv := make([]byte, ivLen)
 	salt := make([]byte, saltLen)
 
-	maxMinIterationsSubtracted, err := rand.Int(rand.Reader, big.NewInt(int64(maxIterations-minIterations)))
+	iterations, err := randIterations()
 	if err != nil {
-		return nil, fmt.Errorf("rand.Int: %w", err)
+		return nil, fmt.Errorf("randIterations: %w", err)
 	}
 
-	iterations := int(maxMinIterationsSubtracted.Int64() + minIterations)
 	binary.BigEndian.PutUint32(iter, uint32(iterations))
 
-	_, err = rand.Read(iv)
-	if err != nil {
-		return nil, fmt.Errorf("rand.Read: %w", err)
+	if _, err := rand.Read(iv); err != nil {
+		return nil, fmt.Errorf("rand.Read(iv): %w", err)
 	}
 
-	_, err = rand.Read(salt)
-	if err != nil {
-		return nil, fmt.Errorf("rand.Read: %w", err)
+	if _, err := rand.Read(salt); err != nil {
+		return nil, fmt.Errorf("rand.Read(salt): %w", err)
 	}
 
 	secretKey := pbkdf2.Key(password, salt, iterations, keyLen, sha1.New)
@@ -65,7 +62,15 @@ func Encrypt(password, plaintext []byte) ([]byte, error) {
 	finalCipher = append(finalCipher, cipherText...)
 
 	return finalCipher, nil
+}
 
+func randIterations() (int, error) {
+	iterations, err := rand.Int(rand.Reader, big.NewInt(int64(maxIterations-minIterations)))
+	if err != nil {
+		return 0, fmt.Errorf("rand.Int: %w", err)
+	}
+
+	return int(iterations.Int64() + minIterations), nil
 }
 
 func Decrypt(password, text []byte) ([]byte, error) {
