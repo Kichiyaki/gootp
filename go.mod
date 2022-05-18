@@ -6,7 +6,7 @@ require (
 	github.com/pquerna/otp v1.3.0
 	github.com/stretchr/testify v1.7.1
 	github.com/urfave/cli/v2 v2.6.0
-	golang.org/x/crypto v0.0.0-20220517005047-85d78b3ac167
+	golang.org/x/crypto v0.0.0-20220518034528-6f7dac969898
 	golang.org/x/term v0.0.0-20220411215600-e5f449aeb171
 )
 
