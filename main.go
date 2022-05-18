@@ -7,19 +7,28 @@ import (
 	"golang.org/x/term"
 	"log"
 	"os"
+	"path"
 	"syscall"
 )
 
 var Version = "development"
 
 func main() {
-	app := newApp()
+	app, err := newApp()
+	if err != nil {
+		log.Fatalln("newApp:", err)
+	}
 	if err := app.Run(os.Args); err != nil {
 		log.Fatalln("app.Run:", err)
 	}
 }
 
-func newApp() *cli.App {
+func newApp() (*cli.App, error) {
+	dirname, err := os.UserHomeDir()
+	if err != nil {
+		return nil, fmt.Errorf("couldn't get user home dir: %w", err)
+	}
+
 	return &cli.App{
 		Name:    "gootp",
 		Version: Version,
@@ -57,9 +66,11 @@ func newApp() *cli.App {
 		},
 		Flags: []cli.Flag{
 			&cli.StringFlag{
-				Name:     "path",
-				Usage:    "path to encrypted andotp file",
-				Required: true,
+				Name:        "path",
+				Usage:       "path to encrypted andotp file",
+				Required:    false,
+				DefaultText: "$HOME/.otp_accounts.json.aes",
+				Value:       path.Join(dirname, ".otp_accounts.json.aes"),
 			},
 			&cli.StringFlag{
 				Name:     "password",
@@ -71,7 +82,7 @@ func newApp() *cli.App {
 		Commands: []*cli.Command{
 			newDecryptCommand(),
 		},
-	}
+	}, nil
 }
 
 func newDecryptCommand() *cli.Command {
