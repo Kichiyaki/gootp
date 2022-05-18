@@ -2,13 +2,14 @@ package main
 
 import (
 	"fmt"
-	"github.com/Kichiyaki/gootp/internal"
-	"github.com/urfave/cli/v2"
-	"golang.org/x/term"
 	"log"
 	"os"
 	"path"
 	"syscall"
+
+	"github.com/Kichiyaki/gootp/internal"
+	"github.com/urfave/cli/v2"
+	"golang.org/x/term"
 )
 
 var Version = "development"

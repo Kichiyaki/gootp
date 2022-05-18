@@ -2,9 +2,10 @@ package internal_test
 
 import (
 	"encoding/json"
-	"github.com/Kichiyaki/gootp/internal"
 	"testing"
 	"time"
+
+	"github.com/Kichiyaki/gootp/internal"
 
 	"github.com/stretchr/testify/assert"
 )

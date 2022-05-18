@@ -2,10 +2,11 @@ package internal
 
 import (
 	"fmt"
-	"github.com/pquerna/otp"
-	"github.com/pquerna/otp/totp"
 	"strings"
 	"time"
+
+	"github.com/pquerna/otp"
+	"github.com/pquerna/otp/totp"
 )
 
 func GenerateOTP(entry Entry) (string, error) {
