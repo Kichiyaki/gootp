@@ -15,16 +15,15 @@ func TestEncryptDecrypt(t *testing.T) {
 
 	entries := []internal.Entry{
 		{
-			Algorithm:     "SHA1",
-			Digits:        6,
-			Issuer:        "TestIssuer",
-			Label:         "TestLabel",
-			LastUsed:      uint(time.Now().Unix()),
-			Period:        30,
-			Secret:        "secret",
-			Thumbnail:     "Default",
-			Type:          "TOTP",
-			UsedFrequency: 0,
+			Algorithm: "SHA1",
+			Digits:    6,
+			Issuer:    "TestIssuer",
+			Label:     "TestLabel",
+			LastUsed:  time.Now().Unix(),
+			Period:    30,
+			Secret:    "secret",
+			Thumbnail: "Default",
+			Type:      "TOTP",
 		},
 	}
 	entriesJSON, err := json.Marshal(entries)
