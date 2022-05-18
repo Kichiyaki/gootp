@@ -1,0 +1,38 @@
+name: test
+
+on:
+  push:
+    tags:
+      - 'v*'
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        go-version: [ 1.18.x ]
+        platform: [ ubuntu-latest ]
+
+    runs-on: ${{ matrix.platform }}
+
+    steps:
+      - name: Install Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: ${{ matrix.go-version }}
+
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: go mod download
+        run: go mod download
+
+      - name: Vet
+        run: go vet ./...
+
+      - name: Test
+        run: go mod download && go test -race -coverprofile=coverage.txt -covermode=atomic ./...
