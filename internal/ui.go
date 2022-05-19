@@ -44,6 +44,7 @@ func NewUI(entries []Entry) UI {
 		entries: entries,
 	}
 	ui.list.Title = "GoOTP"
+	ui.list.SetShowPagination(false)
 	return ui
 }
 
@@ -62,8 +63,10 @@ func (ui UI) Update(teaMsg tea.Msg) (tea.Model, tea.Cmd) {
 		h, v := docStyle.GetFrameSize()
 		ui.list.SetSize(msg.Width-h, msg.Height-v)
 	case refreshOTPsMsg:
-		ui.list.SetItems(entriesToItems(ui.entries, msg.t))
-		cmd = ui.tick()
+		cmd = tea.Batch(
+			ui.list.SetItems(entriesToItems(ui.entries, msg.t)),
+			ui.tick(),
+		)
 	}
 
 	var listCmd tea.Cmd
