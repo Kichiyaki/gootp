@@ -9,30 +9,31 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
-func GenerateOTP(entry Entry, t time.Time) (string, error) {
+func GenerateOTP(entry Entry, t time.Time) (string, int64, error) {
 	algorithm, err := parseAlgorithm(entry.Algorithm)
 	if err != nil {
-		return "", fmt.Errorf("parseAlgorithm: %w", err)
+		return "", 0, fmt.Errorf("parseAlgorithm: %w", err)
 	}
 
 	digits, err := parseDigits(entry.Digits)
 	if err != nil {
-		return "", fmt.Errorf("parseDigits: %w", err)
+		return "", 0, fmt.Errorf("parseDigits: %w", err)
 	}
 
 	switch strings.ToUpper(entry.Type) {
 	case "TOTP":
 		code, err := totp.GenerateCodeCustom(entry.Secret, t, totp.ValidateOpts{
 			Algorithm: algorithm,
-			Period:    entry.Period,
+			Period:    uint(entry.Period),
 			Digits:    digits,
 		})
 		if err != nil {
-			return "", fmt.Errorf("something went wrong while generating totp: %w", err)
+			return "", 0, fmt.Errorf("something went wrong while generating totp: %w", err)
 		}
-		return code, nil
+		period := int64(entry.Period)
+		return code, period - (t.Unix() % period), nil
 	default:
-		return "", fmt.Errorf("unsupported entry type: %s", entry.Type)
+		return "", 0, fmt.Errorf("unsupported entry type: %s", entry.Type)
 	}
 }
 
@@ -51,7 +52,7 @@ func parseAlgorithm(algorithm string) (otp.Algorithm, error) {
 	}
 }
 
-func parseDigits(digits uint) (otp.Digits, error) {
+func parseDigits(digits uint8) (otp.Digits, error) {
 	switch digits {
 	case 6:
 		return otp.DigitsSix, nil

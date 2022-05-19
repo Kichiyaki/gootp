@@ -102,11 +102,10 @@ func Decrypt(password, text []byte) ([]byte, error) {
 
 type Entry struct {
 	Algorithm string   `json:"algorithm"`
-	Digits    uint     `json:"digits"`
+	Digits    uint8    `json:"digits"`
 	Issuer    string   `json:"issuer"`
 	Label     string   `json:"label"`
-	LastUsed  int64    `json:"last_used"`
-	Period    uint     `json:"period"`
+	Period    uint32   `json:"period"`
 	Secret    string   `json:"secret"`
 	Tags      []string `json:"tags"`
 	Thumbnail string   `json:"thumbnail"`

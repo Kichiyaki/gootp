@@ -3,7 +3,6 @@ package internal_test
 import (
 	"encoding/json"
 	"testing"
-	"time"
 
 	"github.com/Kichiyaki/gootp/internal"
 
@@ -19,7 +18,6 @@ func TestEncryptDecrypt(t *testing.T) {
 			Digits:    6,
 			Issuer:    "TestIssuer",
 			Label:     "TestLabel",
-			LastUsed:  time.Now().Unix(),
 			Period:    30,
 			Secret:    "secret",
 			Thumbnail: "Default",
