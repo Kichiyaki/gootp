@@ -9,7 +9,7 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
-func GenerateOTP(entry Entry) (string, error) {
+func GenerateOTP(entry Entry, t time.Time) (string, error) {
 	algorithm, err := parseAlgorithm(entry.Algorithm)
 	if err != nil {
 		return "", fmt.Errorf("parseAlgorithm: %w", err)
@@ -22,7 +22,7 @@ func GenerateOTP(entry Entry) (string, error) {
 
 	switch strings.ToUpper(entry.Type) {
 	case "TOTP":
-		code, err := totp.GenerateCodeCustom(entry.Secret, time.Now(), totp.ValidateOpts{
+		code, err := totp.GenerateCodeCustom(entry.Secret, t, totp.ValidateOpts{
 			Algorithm: algorithm,
 			Period:    entry.Period,
 			Digits:    digits,

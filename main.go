@@ -7,6 +7,8 @@ import (
 	"path"
 	"syscall"
 
+	tea "github.com/charmbracelet/bubbletea"
+
 	"github.com/Kichiyaki/gootp/internal"
 	"github.com/urfave/cli/v2"
 	"golang.org/x/term"
@@ -53,14 +55,9 @@ func newApp() (*cli.App, error) {
 				return fmt.Errorf("something went wrong while decrypting file: %w", err)
 			}
 
-			for _, entry := range entries {
-				otp, err := internal.GenerateOTP(entry)
-				if err != nil {
-					log.Printf("%s - %s: %s", entry.Issuer, entry.Label, err)
-					continue
-				}
-
-				log.Printf("%s - %s: %s", entry.Issuer, entry.Label, otp)
+			p := tea.NewProgram(internal.NewUI(entries), tea.WithAltScreen())
+			if err := p.Start(); err != nil {
+				return fmt.Errorf("p.Start: %w", err)
 			}
 
 			return nil
