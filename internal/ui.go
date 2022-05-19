@@ -1,6 +1,7 @@
 package internal
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/charmbracelet/bubbles/list"
@@ -87,21 +88,25 @@ func (ui UI) tick() tea.Cmd {
 func entriesToItems(entries []Entry, t time.Time) []list.Item {
 	items := make([]list.Item, len(entries))
 	for i, e := range entries {
-		title := e.Label
-		if e.Issuer != "" {
-			title = e.Issuer + " - " + e.Label
-		}
-
-		otp, err := GenerateOTP(e, t)
-		description := otp
-		if err != nil {
-			description = err.Error()
-		}
-
 		items[i] = item{
-			title:       title,
-			description: description,
+			title:       buildItemTitle(e.Issuer, e.Label),
+			description: buildItemDescription(e, t),
 		}
 	}
 	return items
+}
+
+func buildItemTitle(issuer, label string) string {
+	if issuer != "" {
+		return issuer + " - " + label
+	}
+	return label
+}
+
+func buildItemDescription(e Entry, t time.Time) string {
+	otp, remaining, err := GenerateOTP(e, t)
+	if err != nil {
+		return err.Error()
+	}
+	return fmt.Sprintf("%s - %d", otp, remaining)
 }
