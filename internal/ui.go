@@ -104,7 +104,7 @@ func buildItemTitle(issuer, label string) string {
 }
 
 func buildItemDescription(e Entry, t time.Time) string {
-	otp, remaining, err := GenerateOTP(e, t)
+	otp, remaining, err := generateOTP(e, t)
 	if err != nil {
 		return err.Error()
 	}

@@ -9,7 +9,17 @@ import (
 	"github.com/pquerna/otp/totp"
 )
 
-func GenerateOTP(entry Entry, t time.Time) (string, int64, error) {
+const (
+	typeTOTP        = "TOTP"
+	algorithmSHA1   = "SHA1"
+	algorithmSHA256 = "SHA256"
+	algorithmSHA512 = "SHA512"
+	algorithmMD5    = "MD5"
+	digitsSix       = 6
+	digitsEight     = 8
+)
+
+func generateOTP(entry Entry, t time.Time) (string, int64, error) {
 	algorithm, err := parseAlgorithm(entry.Algorithm)
 	if err != nil {
 		return "", 0, fmt.Errorf("parseAlgorithm: %w", err)
@@ -21,7 +31,7 @@ func GenerateOTP(entry Entry, t time.Time) (string, int64, error) {
 	}
 
 	switch strings.ToUpper(entry.Type) {
-	case "TOTP":
+	case typeTOTP:
 		code, err := totp.GenerateCodeCustom(entry.Secret, t, totp.ValidateOpts{
 			Algorithm: algorithm,
 			Period:    uint(entry.Period),
@@ -39,13 +49,13 @@ func GenerateOTP(entry Entry, t time.Time) (string, int64, error) {
 
 func parseAlgorithm(algorithm string) (otp.Algorithm, error) {
 	switch strings.ToUpper(algorithm) {
-	case "SHA1":
+	case algorithmSHA1:
 		return otp.AlgorithmSHA1, nil
-	case "SHA256":
+	case algorithmSHA256:
 		return otp.AlgorithmSHA256, nil
-	case "SHA512":
+	case algorithmSHA512:
 		return otp.AlgorithmSHA512, nil
-	case "MD5":
+	case algorithmMD5:
 		return otp.AlgorithmMD5, nil
 	default:
 		return 0, fmt.Errorf("unsupported algorithm: %s", algorithm)
@@ -54,9 +64,9 @@ func parseAlgorithm(algorithm string) (otp.Algorithm, error) {
 
 func parseDigits(digits uint8) (otp.Digits, error) {
 	switch digits {
-	case 6:
+	case digitsSix:
 		return otp.DigitsSix, nil
-	case 8:
+	case digitsEight:
 		return otp.DigitsEight, nil
 	default:
 		return 0, fmt.Errorf("unsupported digits: %d", digits)
