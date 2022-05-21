@@ -66,10 +66,11 @@ func newApp() (*cli.App, error) {
 		Flags: []cli.Flag{
 			&cli.StringFlag{
 				Name:        "path",
-				Usage:       "path to encrypted andotp file",
+				Aliases:     []string{"p"},
+				Usage:       "path to andotp backup file",
 				Required:    false,
-				DefaultText: "$HOME/.otp_accounts.json.aes",
-				Value:       path.Join(dirname, ".otp_accounts.json.aes"),
+				DefaultText: "$HOME/.otp_accounts.json",
+				Value:       path.Join(dirname, ".otp_accounts.json"),
 			},
 			&cli.StringFlag{
 				Name:     "password",
@@ -108,9 +109,24 @@ func newDecryptCommand() *cli.Command {
 				return fmt.Errorf("something went wrong while decrypting file: %w", err)
 			}
 
-			fmt.Print(string(result))
+			output := c.String("output")
+			if output != "" {
+				if err := os.WriteFile(output, result, 0600); err != nil {
+					return fmt.Errorf("something went wrong while saving file: %w", err)
+				}
+			} else {
+				fmt.Print(string(result))
+			}
 
 			return nil
+		},
+		Flags: []cli.Flag{
+			&cli.StringFlag{
+				Name:     "output",
+				Usage:    "Write to file instead of stdout",
+				Aliases:  []string{"o"},
+				Required: false,
+			},
 		},
 	}
 }
