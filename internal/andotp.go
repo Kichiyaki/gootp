@@ -22,7 +22,7 @@ const (
 	minIterations = 140000
 )
 
-func Encrypt(password, plaintext []byte) ([]byte, error) {
+func Encrypt(plaintext, password []byte) ([]byte, error) {
 	iter := make([]byte, iterationLen)
 	iv := make([]byte, ivLen)
 	salt := make([]byte, saltLen)
@@ -74,7 +74,7 @@ func randIterations() (int, error) {
 	return int(iterations.Int64() + minIterations), nil
 }
 
-func Decrypt(password, text []byte) ([]byte, error) {
+func Decrypt(text, password []byte) ([]byte, error) {
 	iterations := text[:iterationLen]
 	salt := text[iterationLen : iterationLen+saltLen]
 	iv := text[iterationLen+saltLen : iterationLen+saltLen+ivLen]
@@ -112,8 +112,8 @@ type Entry struct {
 	Type      string   `json:"type"`
 }
 
-func DecryptAsEntries(password, text []byte) ([]Entry, error) {
-	result, err := Decrypt(password, text)
+func DecryptAsEntries(text, password []byte) ([]Entry, error) {
+	result, err := Decrypt(text, password)
 	if err != nil {
 		return nil, fmt.Errorf("decrypt: %w", err)
 	}
