@@ -28,17 +28,17 @@ func TestEncryptDecrypt(t *testing.T) {
 	assert.Nil(t, err)
 	password := []byte("password22231")
 
-	encrypted, err := internal.Encrypt(password, entriesJSON)
+	encrypted, err := internal.Encrypt(entriesJSON, password)
 	assert.Nil(t, err)
 
-	decrypted, err := internal.Decrypt(password, encrypted)
+	decrypted, err := internal.Decrypt(encrypted, password)
 	assert.Nil(t, err)
 	var result []internal.Entry
 	err = json.Unmarshal(decrypted, &result)
 	assert.Nil(t, err)
 	assert.Equal(t, entries, result)
 
-	decryptedEntries, err := internal.DecryptAsEntries(password, encrypted)
+	decryptedEntries, err := internal.DecryptAsEntries(encrypted, password)
 	assert.Nil(t, err)
 	assert.Equal(t, entries, decryptedEntries)
 }
