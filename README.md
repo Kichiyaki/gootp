@@ -11,8 +11,13 @@ gootp is a terminal-based 2FA (Two-Factor Authentication) app.
 
 ## Installation
 
+Requirements:
+1. Go 1.18+
+2. [Exported andOTP file](https://github.com/andOTP/andOTP#backups=)
+
 ```shell
 go install github.com/Kichiyaki/gootp@latest
+cp /path/to/andotp/file ~/.otp_accounts.json # !IMPORTANT! this file must be encrypted
 ```
 ## Examples
 

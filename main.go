@@ -86,7 +86,7 @@ func newApp() (*cli.App, error) {
 func newDecryptCommand() *cli.Command {
 	return &cli.Command{
 		Name:   "decrypt",
-		Usage:  "Decrypts the specified backup file",
+		Usage:  "Decrypts the specified file",
 		Action: newEncryptDecryptActionFunc(internal.Decrypt),
 		Flags: []cli.Flag{
 			&cli.StringFlag{
@@ -102,7 +102,7 @@ func newDecryptCommand() *cli.Command {
 func newEncryptCommand() *cli.Command {
 	return &cli.Command{
 		Name:   "encrypt",
-		Usage:  "Encrypts the specified file file using AES-256",
+		Usage:  "Encrypts the specified file",
 		Action: newEncryptDecryptActionFunc(internal.Encrypt),
 		Flags: []cli.Flag{
 			&cli.StringFlag{
