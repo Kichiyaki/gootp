@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"path"
+	"runtime/debug"
 	"syscall"
 
 	tea "github.com/charmbracelet/bubbletea"
@@ -13,8 +14,6 @@ import (
 	"github.com/urfave/cli/v2"
 	"golang.org/x/term"
 )
-
-var Version = "development"
 
 func main() {
 	app, err := newApp()
@@ -32,10 +31,12 @@ func newApp() (*cli.App, error) {
 		return nil, fmt.Errorf("couldn't get user home dir: %w", err)
 	}
 
+	buildInfo, _ := debug.ReadBuildInfo()
+
 	return &cli.App{
 		Name:    "gootp",
-		Usage:   "2FA App compatible with andOTP backup file format",
-		Version: Version,
+		Usage:   "Two-Factor Authentication (2FA) App compatible with andOTP file format",
+		Version: buildInfo.Main.Version,
 		Action: func(c *cli.Context) error {
 			password, err := getPassword(c)
 			if err != nil {
