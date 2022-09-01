@@ -8,7 +8,7 @@ require (
 	github.com/charmbracelet/lipgloss v0.5.0
 	github.com/pquerna/otp v1.3.0
 	github.com/stretchr/testify v1.7.2
-	github.com/urfave/cli/v2 v2.10.2
+	github.com/urfave/cli/v2 v2.14.0
 	golang.org/x/crypto v0.0.0-20220525230936-793ad666bf5e
 	golang.org/x/term v0.0.0-20220526004731-065cf7ba2467
 )
